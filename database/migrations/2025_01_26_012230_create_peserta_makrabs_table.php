@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('peserta_makrabs', function (Blueprint $table) {
             $table->id();
             $table->enum('ukuran_baju', [ 'S', 'M', 'L', 'XL', 'XXL' ])->nullable();
-            $table->enum('status_pembayaran', [ 'Lunas', 'Belum Lunas', 'Tidak Bayar', 'Tidak Ikut', 'Selesai' ])->default('Belum Lunas');
+            $table->enum('status_pembayaran', [ 'Lunas', 'Belum Lunas', 'Tidak Bayar', 'Tidak Ikut', 'Selesai' ])->default('Tidak Ikut');
             $table->boolean('menerima_jahim')->default(0);
             $table->boolean('menerima_sertifikat')->default(0);
             $table->foreignId('id_makrab')->constrained('makrabs')->onDelete('cascade');

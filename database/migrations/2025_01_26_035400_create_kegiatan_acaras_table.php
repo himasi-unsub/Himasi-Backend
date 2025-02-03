@@ -3,9 +3,11 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Tpetry\PostgresqlEnhanced\Schema\Concerns\ZeroDowntimeMigration;
 
 return new class extends Migration
 {
+    use ZeroDowntimeMigration;
     /**
      * Run the migrations.
      */
@@ -26,6 +28,7 @@ return new class extends Migration
             $table->boolean('has_registration')->default(false);
             $table->string('deskripsi')->nullable();
             $table->foreignId('id_mahasiswa')->nullable()->constrained('mahasiswas')->onDelete('set null');
+            $table->foreignId('id_dokumen_sertifikat')->nullable()->constrained('dokumen_sertifikats')->onDelete('set null');
             $table->timestamps();
         });
     }

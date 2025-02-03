@@ -11,16 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pembayaran_kegiatans', function (Blueprint $table) {
+        Schema::create('kehadiran_mabims', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_pembayaran');
-            $table->string('nominal_pembayaran');
+            $table->string('nama_kehadiran');
+            $table->string('keterangan')->nullable();
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
             $table->time('jam_mulai');
             $table->time('jam_selesai');
+            $table->string('kode_kehadiran');
             $table->boolean('is_active')->default(true);
-            $table->foreignId('id_kegiatan_acara')->unique()->constrained('kegiatan_acaras')->onDelete('cascade');
+            $table->foreignId('id_mabim')->constrained('mabims')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pembayaran_kegiatans');
+        Schema::dropIfExists('kehadiran_mabims');
     }
 };

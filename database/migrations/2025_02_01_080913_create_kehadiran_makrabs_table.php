@@ -11,11 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('struktur_organisasi_makrabs', function (Blueprint $table) {
+        Schema::create('kehadiran_makrabs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_mahasiswa')->constrained('mahasiswas')->onDelete('cascade');
-            $table->string('jabatan');
-            $table->string('kontak')->nullable();
+            $table->string('nama_kehadiran');
+            $table->string('keterangan')->nullable();
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_selesai');
+            $table->time('jam_mulai');
+            $table->time('jam_selesai');
+            $table->string('kode_kehadiran');
+            $table->boolean('is_active')->default(true);
             $table->foreignId('id_makrab')->constrained('makrabs')->onDelete('cascade');
             $table->timestamps();
         });
@@ -26,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('struktur_organisasi_makrabs');
+        Schema::dropIfExists('kehadiran_makrabs');
     }
 };

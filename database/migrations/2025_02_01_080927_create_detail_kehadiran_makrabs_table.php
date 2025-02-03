@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('struktur_organisasi_kegiatans', function (Blueprint $table) {
+        Schema::create('detail_kehadiran_makrabs', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_kehadiran_makrab')->constrained('kehadiran_makrabs')->onDelete('cascade');
             $table->foreignId('id_mahasiswa')->constrained('mahasiswas')->onDelete('cascade');
-            $table->string('jabatan');
-            $table->string('kontak')->nullable();
-            $table->foreignId('id_kegiatan_acara')->constrained('kegiatan_acaras')->onDelete('cascade');
+            $table->enum('status_kehadiran', [ 'Hadir', 'Tidak Hadir', 'Izin', 'Sakit' ]);
+            $table->string('keterangan')->nullable();
+            $table->string('file_bukti_kehadiran')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('struktur_organisasi_kegiatans');
+        Schema::dropIfExists('detail_kehadiran_makrabs');
     }
 };
