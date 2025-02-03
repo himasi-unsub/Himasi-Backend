@@ -31,7 +31,7 @@
     -   [x] Daftar Kegiatan Mabim
     -   [x] Daftar Peserta Mabim
     -   [x] Membuat Sertifikat Mabim
-    -   [ ] Membuat Daftar Kehadiran Mabim
+    -   [x] Membuat Daftar Kehadiran Mabim
     -   [ ] Membuat Learning Management System Mabim
 
 -   [ ] Module Kegiatan
@@ -41,7 +41,7 @@
     -   [x] Struktur Kegiatan
     -   [x] Daftar Peserta Kegiatan
     -   [x] Membuat Daftar Pembayaran Kegiatan
-    -   [ ] Membuat Sertifikat Kegiatan
+    -   [X] Membuat Sertifikat Kegiatan
     -   [ ] Membuat Daftar Kehadiran Kegiatan
     -   [ ] Membuat Manajemen Rencana Anggaran Biaya Kegiatan
 
@@ -51,8 +51,8 @@
     -   [x] Struktur Kegiatan Makrab
     -   [x] Daftar Peserta Makrab
     -   [x] Membuat Sertifikat Makrab
-    -   [ ] Membuat Daftar Kehadiran Makrab
-    -   [ ] Membuat Daftar Pembayaran Makrab
+    -   [x] Membuat Daftar Kehadiran Makrab
+    -   [x] Membuat Daftar Pembayaran Makrab
     -   [ ] Membuat Manajemen Rencana Anggaran Biaya Makrab
 
 -   [ ] Module Keuangan / Bendahara
