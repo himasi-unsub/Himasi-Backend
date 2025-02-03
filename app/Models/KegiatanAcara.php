@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 
 class KegiatanAcara extends Model
 {
@@ -21,6 +22,7 @@ class KegiatanAcara extends Model
         'has_kehadiran',
         'has_registration',
         'deskripsi',
+        'id_dokumen_sertifikat',
         'id_mahasiswa',
      ];
 
@@ -53,9 +55,14 @@ class KegiatanAcara extends Model
         return $this->hasMany(StrukturOrganisasiKegiatan::class, 'id_kegiatan_acara');
     }
 
-    public function registrationKegiatan(): HasMany
+    public function registrationKegiatan(): HasOneOrMany
     {
-        return $this->hasMany(PembayaranKegiatan::class, 'id_kegiatan_acara');
+        return $this->hasOne(PembayaranKegiatan::class, 'id_kegiatan_acara');
+    }
+
+    public function dokumenSertifikat(): BelongsTo
+    {
+        return $this->belongsTo(DokumenSertifikat::class, 'id_dokumen_sertifikat');
     }
 
 }

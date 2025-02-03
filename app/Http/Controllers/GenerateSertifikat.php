@@ -29,9 +29,9 @@ class GenerateSertifikat extends Controller
             $ketua_pelaksana     = $peserta->makrab->mahasiswa->nama;
             $dokumenSertifikatId = DokumenSertifikat::findOrFail($peserta->makrab->id_dokumen_sertifikat);
         } else if ('lainnya' == $kegiatan) {
-            $peserta             = PesertaKegiatan::with('kegiatan.mahasiswa')->with('mahasiswa')->findOrFail($peserta);
-            $ketua_pelaksana     = $peserta->kegiatan->mahasiswa->nama;
-            $dokumenSertifikatId = DokumenSertifikat::findOrFail($peserta->kegiatan->id_dokumen_sertifikat);
+            $peserta             = PesertaKegiatan::with('kegiatanAcara.mahasiswa')->with('mahasiswa')->findOrFail($peserta);
+            $ketua_pelaksana     = $peserta->kegiatanAcara->mahasiswa->nama;
+            $dokumenSertifikatId = DokumenSertifikat::findOrFail($peserta->kegiatanAcara->id_dokumen_sertifikat);
         } else {
             return response()->json([
                 'message' => 'Jenis kegiatan tidak ditemukan!',
@@ -101,9 +101,9 @@ class GenerateSertifikat extends Controller
             $ketua_pelaksana     = $pesertas[ 0 ]->makrab->mahasiswa->nama;
             $dokumenSertifikatId = DokumenSertifikat::findOrFail($pesertas[ 0 ]->makrab->id_dokumen_sertifikat);
         } else if ($kegiatan = 'lainnya') {
-            $pesertas            = PesertaKegiatan::with('kegiatan.mahasiswa')->with('mahasiswa')->findMany($records);
-            $ketua_pelaksana     = $pesertas[ 0 ]->kegiatan->mahasiswa->nama;
-            $dokumenSertifikatId = DokumenSertifikat::findOrFail($pesertas[ 0 ]->kegiatan->id_dokumen_sertifikat);
+            $pesertas            = PesertaKegiatan::with('kegiatanAcara.mahasiswa')->with('mahasiswa')->findMany($records);
+            $ketua_pelaksana     = $pesertas[ 0 ]->kegiatanAcara->mahasiswa->nama;
+            $dokumenSertifikatId = DokumenSertifikat::findOrFail($pesertas[ 0 ]->kegiatanAcara->id_dokumen_sertifikat);
         } else {
             return response()->json([
                 'message' => 'Jenis kegiatan tidak ditemukan!',

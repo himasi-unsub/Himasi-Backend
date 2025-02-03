@@ -1,42 +1,47 @@
 <?php
-namespace App\Filament\Resources\ModuleKegiatan\KegiatanAcaraResource\RelationManagers;
 
+namespace App\Filament\Resources\ModuleMakrab;
+
+use App\Filament\Resources\ModuleMakrab\PembayaranMakrabResource\Pages;
+use App\Filament\Resources\ModuleMakrab\PembayaranMakrabResource\RelationManagers;
+use App\Models\PembayaranMakrab;
+use Archilex\ToggleIconColumn\Columns\ToggleIconColumn;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
-use Archilex\ToggleIconColumn\Columns\ToggleIconColumn;
-use Filament\Forms\Set;
-use Filament\Resources\Resource;
-use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use HusamTariq\FilamentTimePicker\Forms\Components\TimePickerField;
-use Illuminate\Support\Str;
 use Malzariey\FilamentDaterangepickerFilter\Fields\DateRangePicker;
 
-class KehadiranKegiatanRelationManager extends RelationManager
+class PembayaranMakrabResource extends Resource
 {
-    protected static string $relationship = 'kehadiranKegiatan';
+    protected static ?string $model = PembayaranMakrab::class;
 
-    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
-    {
-        return $ownerRecord->has_kehadiran;
-    }
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public function form(Form $form): Form
+    protected static ?string $navigationGroup = 'Kegiatan Makrab';
+
+    public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama_kehadiran')
+                Forms\Components\TextInput::make('nama_pembayaran')
                     ->required()
-                    ->live(onBlur: true)
-                    ->afterStateUpdated(
-                        fn(Set $set, ?string $state) => $set(
-                            'kode_kehadiran', Str::slug($state) . '-' . Str::random(5),
-                        )
-                    )
                     ->maxLength(255),
+                Forms\Components\Select::make('id_makrab')
+                    ->relationship('makrab', 'nama_kegiatan')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
+                Forms\Components\TextInput::make('nominal_pembayaran')
+                    ->prefix('Rp.')
+                    ->numeric()
+                    ->required()
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 DateRangePicker::make('tanggal_mulai')
                     ->singleCalendar()
                     ->alwaysShowCalendar()
@@ -59,27 +64,26 @@ class KehadiranKegiatanRelationManager extends RelationManager
                     ->required(),
                 TimePickerField::make('jam_selesai')
                     ->required(),
-                Forms\Components\TextInput::make('kode_kehadiran')
-                    ->required()
-                    ->maxLength(255),
                 Forms\Components\Toggle::make('is_active')
                     ->label('Status')
                     ->default(true)
                     ->required(),
-                Forms\Components\TextInput::make('keterangan')
-                    ->maxLength(255)
-                    ->columnSpanFull(),
-             ]);
+            ]);
     }
 
-    public function table(Table $table): Table
+    public static function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('id')
             ->columns([
-                Tables\Columns\TextColumn::make('nama_kehadiran')
+                Tables\Columns\TextColumn::make('nama_pembayaran')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('tanggal_mulai')
+                Tables\Columns\TextColumn::make('nominal_pembayaran')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('makrab.tahun_kegiatan')
+                    ->label('Tahun Kegiatan')
+                    ->searchable()
+                    ->sortable(),
+                    Tables\Columns\TextColumn::make('tanggal_mulai')
                     ->date()
                     ->sortable()
                     ->toggleable(),
@@ -91,15 +95,10 @@ class KehadiranKegiatanRelationManager extends RelationManager
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('jam_selesai')
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('kode_kehadiran')
-                    ->searchable()
-                    ->toggleable(),
                 ToggleIconColumn::make('is_active')
-                    ->onIcon('heroicon-o-check-circle')
-                    ->offIcon('heroicon-o-x-circle')
-                    ->onColor('success')
-                    ->offColor('danger')
                     ->label('Status')
+                    ->onIcon('heroicon-s-check-circle')
+                    ->offIcon('heroicon-s-x-circle')
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -109,29 +108,35 @@ class KehadiranKegiatanRelationManager extends RelationManager
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-             ])
+            ])
             ->filters([
-                Tables\Filters\SelectFilter::make('is_active')
-                    ->options([
-                        1 => 'Aktif',
-                        0 => 'Tidak Aktif',
-                     ])
-                    ->label('Status'),
-             ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make(),
-             ])
+                //
+            ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
-             ])
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make(),
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                 ]),
-             ]);
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\DetailPembayaranMakrabRelationManager::class,
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListPembayaranMakrabs::route('/'),
+            'create' => Pages\CreatePembayaranMakrab::route('/create'),
+            'view' => Pages\ViewPembayaranMakrab::route('/{record}'),
+            'edit' => Pages\EditPembayaranMakrab::route('/{record}/edit'),
+        ];
     }
 }

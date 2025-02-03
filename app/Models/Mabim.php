@@ -32,4 +32,9 @@ class Mabim extends Model
     {
         return $this->belongsTo(DokumenSertifikat::class, 'id_dokumen_sertifikat');
     }
+
+    public function kehadiranMabim()
+    {
+        return $this->hasMany(KehadiranMabim::class, 'id_mabim');
+    }
 }

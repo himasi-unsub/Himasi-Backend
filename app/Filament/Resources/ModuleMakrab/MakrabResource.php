@@ -1,15 +1,17 @@
 <?php
+
 namespace App\Filament\Resources\ModuleMakrab;
 
 use App\Filament\Resources\ModuleMakrab\MakrabResource\Pages;
-use App\Filament\Resources\ModuleMakrab\MakrabResource\RelationManagers\PesertaMakrabRelationManager;
-use App\Filament\Resources\ModuleMakrab\MakrabResource\RelationManagers\StrukturOrganisasiMakrabsRelationManager;
+use App\Filament\Resources\ModuleMakrab\MakrabResource\RelationManagers;
 use App\Models\Makrab;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class MakrabResource extends Resource
 {
@@ -59,9 +61,14 @@ class MakrabResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $year_angkatan = [  ];
+        for ($i = 2021; $i <= date('Y'); $i++) {
+            $year_angkatan[ $i ] = $i;
+        }
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nama_kegiatan')
+                    ->wrap()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tahun_kegiatan'),
                 Tables\Columns\TextColumn::make('tanggal_mulai')
@@ -71,8 +78,12 @@ class MakrabResource extends Resource
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('lokasi')
+                    ->wrap()
+                    ->toggleable(isToggledHiddenByDefault: false)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('status')
+                    ->toggleable(isToggledHiddenByDefault: false)
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -83,11 +94,14 @@ class MakrabResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
              ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('tahun_kegiatan')
+                    ->options($year_angkatan),
              ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                ])
              ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -99,18 +113,19 @@ class MakrabResource extends Resource
     public static function getRelations(): array
     {
         return [
-            StrukturOrganisasiMakrabsRelationManager::class,
-            PesertaMakrabRelationManager::class,
+            RelationManagers\StrukturOrganisasiMakrabRelationManager::class,
+            RelationManagers\PesertaMakrabRelationManager::class,
+            RelationManagers\PembayaranMakrabRelationManager::class,
          ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListMakrabs::route('/'),
+            'index' => Pages\ListMakrabs::route('/'),
             'create' => Pages\CreateMakrab::route('/create'),
-            'view'   => Pages\ViewMakrab::route('/{record}'),
-            'edit'   => Pages\EditMakrab::route('/{record}/edit'),
-         ];
+            'view' => Pages\ViewMakrab::route('/{record}'),
+            'edit' => Pages\EditMakrab::route('/{record}/edit'),
+        ];
     }
 }

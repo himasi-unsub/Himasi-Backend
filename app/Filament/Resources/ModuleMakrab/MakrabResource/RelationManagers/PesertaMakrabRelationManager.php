@@ -1,14 +1,16 @@
 <?php
+
 namespace App\Filament\Resources\ModuleMakrab\MakrabResource\RelationManagers;
 
+use Archilex\ToggleIconColumn\Columns\ToggleIconColumn;
 use Filament\Forms;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Columns\Column;
 use pxlrbt\FilamentExcel\Exports\ExcelExport;
@@ -23,11 +25,6 @@ class PesertaMakrabRelationManager extends RelationManager
             ->schema([
                 Forms\Components\Select::make('id_mahasiswa')
                     ->relationship('mahasiswa', 'nama')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-                Forms\Components\Select::make('id_makrab')
-                    ->relationship('makrab', 'nama_kegiatan')
                     ->searchable()
                     ->preload()
                     ->required(),
@@ -55,13 +52,13 @@ class PesertaMakrabRelationManager extends RelationManager
                 Forms\Components\Toggle::make('menerima_sertifikat')
                     ->default(false)
                     ->required(),
-             ]);
+            ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('mahasiswa.nama')
+        ->recordTitleAttribute('id')
             ->columns([
                 Tables\Columns\TextColumn::make('mahasiswa.npm')
                     ->searchable()
@@ -70,12 +67,38 @@ class PesertaMakrabRelationManager extends RelationManager
                     ->wrap()
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('ukuran_baju')
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('status_pembayaran')
                     ->sortable()
                     ->toggleable(),
+                ToggleIconColumn::make('menerima_jahim')
+                    ->onIcon('heroicon-o-check-circle')
+                    ->offIcon('heroicon-o-x-circle')
+                    ->sortable()
+                    ->toggleable(),
+                ToggleIconColumn::make('menerima_sertifikat')
+                    ->onIcon('heroicon-o-check-circle')
+                    ->offIcon('heroicon-o-x-circle')
+                    ->sortable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
              ])
             ->filters([
-                SelectFilter::make('status_pembayaran')
+                Tables\Filters\SelectFilter::make('id_makrab')
+                    ->label('Tahun Kegiatan Makrab')
+                    ->relationship('makrab', 'tahun_kegiatan')
+                    ->searchable()
+                    ->preload(),
+                Tables\Filters\SelectFilter::make('status_pembayaran')
                     ->options([
                         'Lunas'       => 'Lunas',
                         'Belum Lunas' => 'Belum Lunas',
@@ -83,34 +106,31 @@ class PesertaMakrabRelationManager extends RelationManager
                         'Tidak Ikut'  => 'Tidak Ikut',
                         'Selesai'     => 'Selesai',
                      ]),
-             ])
-            ->headerActions([
-                \EightyNine\ExcelImport\Tables\ExcelImportRelationshipAction::make('importExcel')
-                    ->label('Import Excel')
-                    ->sampleExcel(
-                        sampleData: [
-                            'ukuran_baju'         => 'M',
-                            'status_pembayaran'   => 'Lunas',
-                            'menerima_jahim'      => 'Ya',
-                            'menerima_sertifikat' => 'Ya',
-                            'id_mahasiswa'        => '1',
-                         ],
-                        fileName: 'peserta-makrab-example-data.xlsx',
-                        sampleButtonLabel: 'Download Sample',
-                        customiseActionUsing: fn(Action $action) => $action->color('secondary')
-                            ->icon('heroicon-m-clipboard')
-                            ->requiresConfirmation(),
-                    ),
-                Tables\Actions\CreateAction::make(),
+                Tables\Filters\SelectFilter::make('ukuran_baju')
+                    ->options([
+                        'S'   => 'S',
+                        'M'   => 'M',
+                        'L'   => 'L',
+                        'XL'  => 'XL',
+                        'XXL' => 'XXL',
+                     ]),
+                Tables\Filters\SelectFilter::make('menerima_jahim')
+                    ->options([
+                        1 => 'Ya',
+                        0 => 'Tidak',
+                     ]),
+                Tables\Filters\SelectFilter::make('menerima_sertifikat')
+                    ->options([
+                        1 => 'Ya',
+                        0 => 'Tidak',
+                     ]),
              ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-
                     Tables\Actions\Action::make('generate-sertifikat')
                         ->label('Generate Sertifikat')
                         ->icon('heroicon-o-arrow-down-tray')
                         ->url(fn($record) => route('generate-sertifikat', [ 'kegiatan' => 'makrab', 'peserta' => $record->id ])),
-                    Tables\Actions\EditAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                  ]),

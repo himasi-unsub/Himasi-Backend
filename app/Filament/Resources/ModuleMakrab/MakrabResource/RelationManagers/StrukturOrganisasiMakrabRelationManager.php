@@ -1,21 +1,18 @@
 <?php
-namespace App\Filament\Resources\ModuleKegiatan\KegiatanAcaraResource\RelationManagers;
+
+namespace App\Filament\Resources\ModuleMakrab\MakrabResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class StrukturOrganisasiKegiatanRelationManager extends RelationManager
+class StrukturOrganisasiMakrabRelationManager extends RelationManager
 {
-    protected static string $relationship = 'strukturOrganisasiKegiatan';
-
-    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
-    {
-        return $ownerRecord->has_struktur;
-    }
+    protected static string $relationship = 'strukturOrganisasiMakrab';
 
     public function form(Form $form): Form
     {
@@ -33,7 +30,7 @@ class StrukturOrganisasiKegiatanRelationManager extends RelationManager
                 Forms\Components\TextInput::make('kontak')
                     ->required()
                     ->maxLength(255),
-             ]);
+            ]);
     }
 
     public function table(Table $table): Table
@@ -45,21 +42,21 @@ class StrukturOrganisasiKegiatanRelationManager extends RelationManager
                     ->label('Nama Mahasiswa'),
                 Tables\Columns\TextColumn::make('jabatan'),
                 Tables\Columns\TextColumn::make('kontak'),
-             ])
+            ])
             ->filters([
                 //
-             ])
+            ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-             ])
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-             ])
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                 ]),
-             ]);
+                ]),
+            ]);
     }
 }

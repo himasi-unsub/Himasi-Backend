@@ -1,33 +1,55 @@
 <?php
-namespace App\Filament\Resources\ModuleKegiatan\KegiatanAcaraResource\RelationManagers;
 
+namespace App\Filament\Resources\ModuleMakrab;
+
+use App\Filament\Resources\ModuleMakrab\KehadiranMakrabResource\Pages;
+use App\Filament\Resources\ModuleMakrab\KehadiranMakrabResource\RelationManagers;
+use App\Models\KehadiranMakrab;
+use App\Models\Makrab;
+use Archilex\ToggleIconColumn\Columns\ToggleIconColumn;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
-use Archilex\ToggleIconColumn\Columns\ToggleIconColumn;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
-use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use HusamTariq\FilamentTimePicker\Forms\Components\TimePickerField;
 use Illuminate\Support\Str;
 use Malzariey\FilamentDaterangepickerFilter\Fields\DateRangePicker;
 
-class KehadiranKegiatanRelationManager extends RelationManager
+class KehadiranMakrabResource extends Resource
 {
-    protected static string $relationship = 'kehadiranKegiatan';
+    protected static ?string $model = KehadiranMakrab::class;
 
-    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
-    {
-        return $ownerRecord->has_kehadiran;
-    }
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public function form(Form $form): Form
+    protected static ?string $navigationGroup = 'Kegiatan Makrab';
+
+    public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('id_makrab')
+                    ->relationship('makrab', 'nama_kegiatan')
+                    ->searchable()
+                    ->preload()
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(
+                        function (Set $set, ?string $state) {
+                            $nama_kegiatan = Makrab::find($state)->nama_kegiatan;
+
+                            $set(
+                                'nama_kehadiran', 'Kehadiran ' . $nama_kegiatan,
+                            );
+
+                            $set(
+                                'kode_kehadiran', Str::slug($nama_kegiatan) . '-' . Str::random(5),
+                            );
+                        }
+                    )
+                    ->required(),
                 Forms\Components\TextInput::make('nama_kehadiran')
                     ->required()
                     ->live(onBlur: true)
@@ -69,16 +91,20 @@ class KehadiranKegiatanRelationManager extends RelationManager
                 Forms\Components\TextInput::make('keterangan')
                     ->maxLength(255)
                     ->columnSpanFull(),
-             ]);
+            ]);
     }
 
-    public function table(Table $table): Table
+    public static function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('id')
             ->columns([
                 Tables\Columns\TextColumn::make('nama_kehadiran')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('makrab.nama_kegiatan')
+                    ->label('Kegiatan Acara')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('tanggal_mulai')
                     ->date()
                     ->sortable()
@@ -109,29 +135,46 @@ class KehadiranKegiatanRelationManager extends RelationManager
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-             ])
+            ])
             ->filters([
+                Tables\Filters\SelectFilter::make('makrab.nama_kegiatan')
+                    ->relationship('makrab', 'nama_kegiatan')
+                    ->searchable()
+                    ->label('Kegiatan Makrab'),
                 Tables\Filters\SelectFilter::make('is_active')
                     ->options([
                         1 => 'Aktif',
                         0 => 'Tidak Aktif',
                      ])
                     ->label('Status'),
-             ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make(),
-             ])
+            ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
-             ])
+                ]),
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                 ]),
-             ]);
+                ]),
+            ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\DetailKehadiranMakrabRelationManager::class,
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListKehadiranMakrabs::route('/'),
+            'create' => Pages\CreateKehadiranMakrab::route('/create'),
+            'view' => Pages\ViewKehadiranMakrab::route('/{record}'),
+            'edit' => Pages\EditKehadiranMakrab::route('/{record}/edit'),
+        ];
     }
 }

@@ -55,15 +55,24 @@ class KegiatanAcaraResource extends Resource
                      ])
                     ->required(),
                 Forms\Components\Toggle::make('has_struktur')
+                    ->label('Memiliki Struktur Panitia?')
                     ->required(),
                 Forms\Components\Toggle::make('has_peserta')
+                    ->label('Memiliki Peserta?')
                     ->required(),
                 Forms\Components\Toggle::make('has_kehadiran')
+                    ->label('Memiliki Kehadiran?')
                     ->required(),
                 Forms\Components\Toggle::make('has_registration')
+                    ->label('Memiliki Pendaftaran / Pembayaran?')
                     ->required(),
+                Forms\Components\Select::make('id_dokumen_sertifikat')
+                    ->label('Dokumen Sertifikat')
+                    ->relationship('dokumenSertifikat', 'nama_dokumen')
+                    ->helperText('*Opsional')
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\Textarea::make('deskripsi')
-                    ->columnSpanFull()
                     ->maxLength(255),
              ]);
     }

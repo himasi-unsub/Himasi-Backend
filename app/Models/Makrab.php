@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 
 class Makrab extends Model
 {
@@ -38,5 +39,10 @@ class Makrab extends Model
     public function strukturOrganisasiMakrab(): HasMany
     {
         return $this->hasMany(StrukturOrganisasiMakrab::class, 'id_makrab');
+    }
+
+    public function pembayaranMakrab(): HasOneOrMany
+    {
+        return $this->hasOne(PembayaranMakrab::class, 'id_makrab');
     }
 }

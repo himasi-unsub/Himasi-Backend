@@ -10,6 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use HusamTariq\FilamentTimePicker\Forms\Components\TimePickerField;
+use Malzariey\FilamentDaterangepickerFilter\Fields\DateRangePicker;
 
 class PembayaranKegiatanResource extends Resource
 {
@@ -37,6 +39,28 @@ class PembayaranKegiatanResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->columnSpanFull(),
+                DateRangePicker::make('tanggal_mulai')
+                    ->singleCalendar()
+                    ->alwaysShowCalendar()
+                    ->format('YYYY-MM-DD')
+                    ->displayFormat('YYYY-MM-DD')
+                    ->timezone('Asia/Jakarta')
+                    ->defaultToday()
+                    ->autoApply()
+                    ->required(),
+                DateRangePicker::make('tanggal_selesai')
+                    ->singleCalendar()
+                    ->alwaysShowCalendar()
+                    ->format('YYYY-MM-DD')
+                    ->displayFormat('YYYY-MM-DD')
+                    ->timezone('Asia/Jakarta')
+                    ->defaultToday()
+                    ->autoApply()
+                    ->required(),
+                TimePickerField::make('jam_mulai')
+                    ->required(),
+                TimePickerField::make('jam_selesai')
+                    ->required(),
                 Forms\Components\Toggle::make('is_active')
                     ->label('Status')
                     ->default(true)
@@ -56,6 +80,18 @@ class PembayaranKegiatanResource extends Resource
                     ->label('Kegiatan Acara')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('tanggal_mulai')
+                    ->date()
+                    ->sortable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('tanggal_selesai')
+                    ->date()
+                    ->sortable()
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('jam_mulai')
+                    ->toggleable(),
+                Tables\Columns\TextColumn::make('jam_selesai')
+                    ->toggleable(),
                 ToggleIconColumn::make('is_active')
                     ->label('Status')
                     ->onIcon('heroicon-s-check-circle')

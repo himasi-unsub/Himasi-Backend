@@ -1,28 +1,24 @@
 <?php
-namespace App\Filament\Resources\ModuleKegiatan\KegiatanAcaraResource\RelationManagers;
+
+namespace App\Filament\Resources\ModuleMabim\MabimResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\Mabim;
 use Archilex\ToggleIconColumn\Columns\ToggleIconColumn;
 use Filament\Forms\Set;
-use Filament\Resources\Resource;
-use Filament\Tables\Filters\SelectFilter;
 use HusamTariq\FilamentTimePicker\Forms\Components\TimePickerField;
 use Illuminate\Support\Str;
 use Malzariey\FilamentDaterangepickerFilter\Fields\DateRangePicker;
 
-class KehadiranKegiatanRelationManager extends RelationManager
+class KehadiranMabimRelationManager extends RelationManager
 {
-    protected static string $relationship = 'kehadiranKegiatan';
-
-    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
-    {
-        return $ownerRecord->has_kehadiran;
-    }
+    protected static string $relationship = 'kehadiranMabim';
 
     public function form(Form $form): Form
     {
@@ -69,13 +65,13 @@ class KehadiranKegiatanRelationManager extends RelationManager
                 Forms\Components\TextInput::make('keterangan')
                     ->maxLength(255)
                     ->columnSpanFull(),
-             ]);
+            ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('id')
+            ->recordTitleAttribute('nama_kehadiran')
             ->columns([
                 Tables\Columns\TextColumn::make('nama_kehadiran')
                     ->searchable(),
@@ -109,7 +105,7 @@ class KehadiranKegiatanRelationManager extends RelationManager
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-             ])
+            ])
             ->filters([
                 Tables\Filters\SelectFilter::make('is_active')
                     ->options([
@@ -117,21 +113,20 @@ class KehadiranKegiatanRelationManager extends RelationManager
                         0 => 'Tidak Aktif',
                      ])
                     ->label('Status'),
-             ])
+            ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-             ])
+            ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
-             ])
+                ]),
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                 ]),
-             ]);
+                ]),
+            ]);
     }
 }
