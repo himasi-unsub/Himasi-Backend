@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
@@ -35,7 +36,7 @@ class GenerateSertifikat extends Controller
         } else {
             return response()->json([
                 'message' => 'Jenis kegiatan tidak ditemukan!',
-             ], 404);
+            ], 404);
         }
 
         // Check if file exists
@@ -58,7 +59,7 @@ class GenerateSertifikat extends Controller
             'path'   => storage_path('app/public/' . $qr_code_result),
             'width'  => 100,
             'height' => 100,
-         ]);
+        ]);
 
         // Set file location
         $file_name     = 'sertifikat-' . $kegiatan . '-' . $peserta->mahasiswa->npm . '-' . $peserta->mahasiswa->nama;
@@ -78,7 +79,7 @@ class GenerateSertifikat extends Controller
             return response()->json([
                 'message' => 'Gagal menyimpan file sertifikat!',
                 'error'   => $e->getMessage(),
-             ], 500);
+            ], 500);
         }
 
         // delete QR Code image
@@ -94,20 +95,20 @@ class GenerateSertifikat extends Controller
 
         if ('mabim' == $kegiatan) {
             $pesertas            = PesertaMabim::with('mabim.mahasiswa')->with('mahasiswa')->findMany($records);
-            $ketua_pelaksana     = $pesertas[ 0 ]->mabim->mahasiswa->nama;
-            $dokumenSertifikatId = DokumenSertifikat::findOrFail($pesertas[ 0 ]->mabim->id_dokumen_sertifikat);
+            $ketua_pelaksana     = $pesertas[0]->mabim->mahasiswa->nama;
+            $dokumenSertifikatId = DokumenSertifikat::findOrFail($pesertas[0]->mabim->id_dokumen_sertifikat);
         } else if ('makrab' == $kegiatan) {
             $pesertas            = PesertaMakrab::with('makrab')->with('mahasiswa')->findMany($records);
-            $ketua_pelaksana     = $pesertas[ 0 ]->makrab->mahasiswa->nama;
-            $dokumenSertifikatId = DokumenSertifikat::findOrFail($pesertas[ 0 ]->makrab->id_dokumen_sertifikat);
+            $ketua_pelaksana     = $pesertas[0]->makrab->mahasiswa->nama;
+            $dokumenSertifikatId = DokumenSertifikat::findOrFail($pesertas[0]->makrab->id_dokumen_sertifikat);
         } else if ($kegiatan = 'lainnya') {
             $pesertas            = PesertaKegiatan::with('kegiatanAcara.mahasiswa')->with('mahasiswa')->findMany($records);
-            $ketua_pelaksana     = $pesertas[ 0 ]->kegiatanAcara->mahasiswa->nama;
-            $dokumenSertifikatId = DokumenSertifikat::findOrFail($pesertas[ 0 ]->kegiatanAcara->id_dokumen_sertifikat);
+            $ketua_pelaksana     = $pesertas[0]->kegiatanAcara->mahasiswa->nama;
+            $dokumenSertifikatId = DokumenSertifikat::findOrFail($pesertas[0]->kegiatanAcara->id_dokumen_sertifikat);
         } else {
             return response()->json([
                 'message' => 'Jenis kegiatan tidak ditemukan!',
-             ], 404);
+            ], 404);
         }
 
         // Check permission folder
@@ -122,7 +123,7 @@ class GenerateSertifikat extends Controller
         if ($pesertas->isEmpty()) {
             return response()->json([
                 'message' => 'Tidak ada peserta MABIM!',
-             ], 404);
+            ], 404);
         }
 
         // create new ZIP file
@@ -134,7 +135,7 @@ class GenerateSertifikat extends Controller
         if ($zip->open(storage_path('app/public/' . $zip_file_location), \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
             return response()->json([
                 'message' => 'Gagal membuat file ZIP!',
-             ], 500);
+            ], 500);
         }
 
         // loop through peserta mabim
@@ -144,7 +145,7 @@ class GenerateSertifikat extends Controller
             if (! Storage::disk('public')->exists($dokumenSertifikatId->file)) {
                 return response()->json([
                     'message' => 'File template tidak ditemukan!',
-                 ], 404);
+                ], 404);
             }
 
             // generate QR Code
@@ -162,7 +163,7 @@ class GenerateSertifikat extends Controller
                 'path'   => storage_path('app/public/' . $qr_code_result),
                 'width'  => 100,
                 'height' => 100,
-             ]);
+            ]);
 
             // Set file location
             $file_name     = 'sertifikat-' . $kegiatan . '-' . $peserta->mahasiswa->npm . '-' . $peserta->mahasiswa->nama;
@@ -179,18 +180,17 @@ class GenerateSertifikat extends Controller
                     return response()->json([
                         'message' => 'Gagal menambahkan file sertifikat ke dalam ZIP!',
                         'error'   => $e->getMessage(),
-                     ], 500);
+                    ], 500);
                 }
             } catch (\Exception $e) {
                 return response()->json([
                     'message' => 'Gagal menyimpan file sertifikat!',
                     'error'   => $e->getMessage(),
-                 ], 500);
+                ], 500);
             }
 
             // delete QR Code image
             Storage::disk('public')->delete($qr_code_result);
-
         }
 
         // close ZIP file
@@ -202,7 +202,7 @@ class GenerateSertifikat extends Controller
                 Storage::disk('public')->delete($zip_file_location);
                 return response()->json([
                     'message' => 'Tidak ada file yang ditambahkan ke dalam ZIP!',
-                 ], 404);
+                ], 404);
             }
             // delete DOCX file
             foreach ($pesertas as $peserta) {
@@ -215,11 +215,10 @@ class GenerateSertifikat extends Controller
             return response()->json([
                 'message' => 'Gagal menutup file ZIP!',
                 'error'   => $e->getMessage(),
-             ], 500);
+            ], 500);
         }
 
         return response()->download(storage_path('app/public/' . $zip_file_location))->deleteFileAfterSend(true);
-
     }
 
     protected function __generateQrCode($kegiatan, $peserta)
@@ -227,7 +226,7 @@ class GenerateSertifikat extends Controller
         if (! $peserta) {
             return response()->json([
                 'message' => 'Peserta tidak ditemukan!',
-             ], 404);
+            ], 404);
         }
 
         // make directory if not exists
@@ -238,7 +237,7 @@ class GenerateSertifikat extends Controller
         $writter = new PngWriter();
 
         $qr_code = new QrCode(
-            data: route('verifikasi-sertifikat', [ 'sha256' => Crypt::encryptString($peserta->mahasiswa->npm) ]),
+            data: route('verifikasi-sertifikat', ['sha256' => Crypt::encryptString($peserta->mahasiswa->npm . '-' . $kegiatan)]),
             encoding: new Encoding('UTF-8'),
             errorCorrectionLevel: ErrorCorrectionLevel::Medium,
             size: 300,
@@ -254,5 +253,67 @@ class GenerateSertifikat extends Controller
         $result->saveToFile(storage_path('app/public/' . $storage_path));
 
         return $storage_path;
+    }
+
+    public function verifikasiSertifikat(string $sha256)
+    {
+        $npm = '';
+        $kegiatan = '';
+        try {
+            // Decrypt the sha256 to get the NPM and kegiatan
+            $decrypted = Crypt::decryptString($sha256);
+            list($npm, $kegiatan) = explode('-', $decrypted);
+
+            // Validate NPM format
+            if (!preg_match('/^[A-Z0-9]{9,10}$/', $npm)) {
+                return response()->json([
+                    'message' => 'NPM tidak valid!',
+                    'status'  => 'error',
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Sertifikat tidak valid!',
+                'error'   => $e->getMessage(),
+            ], 404);
+        }
+
+        // Find participant by NPM
+        if ($kegiatan === 'mabim') {
+            $peserta = PesertaMabim::with('mabim')->whereHas('mahasiswa', function ($query) use ($npm) {
+                $query->where('npm', $npm);
+            })->first();
+        } elseif ($kegiatan === 'makrab') {
+            $peserta = PesertaMakrab::with('makrab')->whereHas('mahasiswa', function ($query) use ($npm) {
+                $query->where('npm', $npm);
+            })->first();
+        } elseif ($kegiatan === 'lainnya') {
+            $peserta = PesertaKegiatan::with('kegiatanAcara')->whereHas('mahasiswa', function ($query) use ($npm) {
+                $query->where('npm', $npm);
+            })->first();
+        } else {
+            // Handle other kegiatan types if necessary
+            return response()->json([
+                'message' => 'Jenis kegiatan tidak ditemukan!',
+                'status' => 'error',
+            ], 404);
+        }
+
+        if (! $peserta) {
+            return response()->json([
+                'message' => 'Peserta tidak ditemukan!',
+                'status'  => 'error',
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Sertifikat valid!',
+            'status' => 'success',
+            'data'    => [
+                'nama' => $peserta->mahasiswa->nama,
+                'npm'  => $peserta->mahasiswa->npm,
+                'kegiatan' => $peserta->makrab->nama_kegiatan ?? $peserta->mabim->nama_kegiatan ?? $peserta->kegiatanAcara->nama_kegiatan,
+            ],
+        ]);
     }
 }
