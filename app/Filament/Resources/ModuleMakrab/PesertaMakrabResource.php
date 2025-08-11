@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Resources\ModuleMakrab;
 
 use App\Filament\Resources\ModuleMakrab\PesertaMakrabResource\Pages;
@@ -28,9 +29,14 @@ class PesertaMakrabResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('id_mahasiswa')
-                    ->relationship('mahasiswa', 'nama')
-                    ->searchable()
+                    ->relationship('mahasiswa')
+                    // ->relationship('mahasiswa', 'npm')
+                    ->searchable([
+                        'npm',
+                        'nama',
+                    ])
                     ->preload()
+                    ->getOptionLabelFromRecordUsing(fn($record) => $record->npm . ' - ' . $record->nama)
                     ->required(),
                 Forms\Components\Select::make('id_makrab')
                     ->relationship('makrab', 'nama_kegiatan')
@@ -44,7 +50,7 @@ class PesertaMakrabResource extends Resource
                         'L'   => 'L',
                         'XL'  => 'XL',
                         'XXL' => 'XXL',
-                     ]),
+                    ]),
                 Forms\Components\Select::make('status_pembayaran')
                     ->options([
                         'Lunas'       => 'Lunas',
@@ -52,7 +58,7 @@ class PesertaMakrabResource extends Resource
                         'Tidak Bayar' => 'Tidak Bayar',
                         'Tidak Ikut'  => 'Tidak Ikut',
                         'Selesai'     => 'Selesai',
-                     ])
+                    ])
                     ->default('Belum Lunas')
                     ->required(),
                 Forms\Components\Toggle::make('menerima_jahim')
@@ -61,7 +67,7 @@ class PesertaMakrabResource extends Resource
                 Forms\Components\Toggle::make('menerima_sertifikat')
                     ->default(false)
                     ->required(),
-             ]);
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -104,7 +110,7 @@ class PesertaMakrabResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-             ])
+            ])
             ->filters([
                 SelectFilter::make('id_makrab')
                     ->label('Tahun Kegiatan Makrab')
@@ -118,7 +124,7 @@ class PesertaMakrabResource extends Resource
                         'Tidak Bayar' => 'Tidak Bayar',
                         'Tidak Ikut'  => 'Tidak Ikut',
                         'Selesai'     => 'Selesai',
-                     ]),
+                    ]),
                 SelectFilter::make('ukuran_baju')
                     ->options([
                         'S'   => 'S',
@@ -126,28 +132,28 @@ class PesertaMakrabResource extends Resource
                         'L'   => 'L',
                         'XL'  => 'XL',
                         'XXL' => 'XXL',
-                     ]),
+                    ]),
                 SelectFilter::make('menerima_jahim')
                     ->options([
                         1 => 'Ya',
                         0 => 'Tidak',
-                     ]),
+                    ]),
                 SelectFilter::make('menerima_sertifikat')
                     ->options([
                         1 => 'Ya',
                         0 => 'Tidak',
-                     ]),
-             ])
+                    ]),
+            ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\Action::make('generate-sertifikat')
                         ->label('Generate Sertifikat')
                         ->icon('heroicon-o-arrow-down-tray')
-                        ->url(fn($record) => route('generate-sertifikat', [ 'kegiatan' => 'makrab', 'peserta' => $record->id ])),
+                        ->url(fn($record) => route('generate-sertifikat', ['kegiatan' => 'makrab', 'peserta' => $record->id])),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
-                 ]),
-             ])
+                ]),
+            ])
             ->bulkActions([
                 Tables\Actions\BulkAction::make('generate-sertifikat')
                     ->label('Generate Sertifikat')
@@ -157,7 +163,7 @@ class PesertaMakrabResource extends Resource
                     ->closeModalByEscaping()
                     ->modalDescription('Apakah Anda yakin ingin mengenerate sertifikat peserta yang dipilih?')
                     ->action(
-                        fn(Collection $records = null) => redirect()->route('bulk-generate-sertifikat', [ 'kegiatan' => 'makrab', 'records' => urlencode(json_encode($records->pluck('id')->toArray())) ])
+                        fn(Collection $records = null) => redirect()->route('bulk-generate-sertifikat', ['kegiatan' => 'makrab', 'records' => urlencode(json_encode($records->pluck('id')->toArray()))])
                     ),
                 Tables\Actions\BulkActionGroup::make([
                     ExportBulkAction::make()
@@ -173,18 +179,18 @@ class PesertaMakrabResource extends Resource
                                         Column::make('status_pembayaran')->heading('Status Pembayaran'),
                                         Column::make('menerima_jahim')->heading('Menerima Jahim'),
                                         Column::make('menerima_sertifikat')->heading('Menerima Sertifikat'),
-                                     ]),
-                             ]
+                                    ]),
+                            ]
                         ),
                     Tables\Actions\DeleteBulkAction::make(),
-                 ]),
-             ]);
+                ]),
+            ]);
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ManagePesertaMakrabs::route('/'),
-         ];
+        ];
     }
 }

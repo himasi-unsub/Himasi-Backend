@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class KehadiranMakrab extends Model
 {
@@ -16,21 +18,21 @@ class KehadiranMakrab extends Model
         'kode_kehadiran',
         'is_active',
         'id_makrab',
-     ];
+    ];
 
     protected $casts = [
         'tanggal_mulai'   => 'date',
         'tanggal_selesai' => 'date',
         'is_active'       => 'boolean',
-     ];
+    ];
 
-     public function makrab(): BelongsTo
-     {
+    public function makrab(): BelongsTo
+    {
         return $this->belongsTo(Makrab::class, 'id_makrab');
-     }
+    }
 
-     public function detailKehadiranMakrab(): HasMany
-     {
+    public function detailKehadiranMakrab(): HasMany
+    {
         return $this->hasMany(DetailKehadiranMakrab::class, 'id_kehadiran_makrab');
-     }
+    }
 }
