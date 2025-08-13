@@ -14,14 +14,14 @@
 -   [ ] Integrasi Google Drive API
 -   [ ] Payment Gateway (Midtrans)
 
--   [ ] Membuat Manajemen User
+-   [x] Membuat Manajemen User
 
-    -   [ ] Membuat Manajemen Role
-    -   [ ] Membuat Manajemen Permission
-    -   [ ] Membuat Manajemen Role Permission
-    -   [ ] Membuat Manajemen User Role
+    -   [x] Membuat Manajemen Role
+    -   [x] Membuat Manajemen Permission
+    -   [x] Membuat Manajemen Role Permission
+    -   [x] Membuat Manajemen User Role
 
--   [ ] Membuat Manajemen Profile User
+-   [x] Membuat Manajemen Profile User
 
 -   [ ] Membuat Manajemen Struktur Organisasi
 
@@ -41,7 +41,7 @@
     -   [x] Struktur Kegiatan
     -   [x] Daftar Peserta Kegiatan
     -   [x] Membuat Daftar Pembayaran Kegiatan
-    -   [X] Membuat Sertifikat Kegiatan
+    -   [x] Membuat Sertifikat Kegiatan
     -   [ ] Membuat Daftar Kehadiran Kegiatan
     -   [ ] Membuat Manajemen Rencana Anggaran Biaya Kegiatan
 

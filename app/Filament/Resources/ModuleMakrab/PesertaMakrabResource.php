@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\ModuleMakrab;
 
 use App\Filament\Resources\ModuleMakrab\PesertaMakrabResource\Pages;
+use App\Models\Mahasiswa;
 use App\Models\PesertaMakrab;
 use Archilex\ToggleIconColumn\Columns\ToggleIconColumn;
 use Filament\Forms;
@@ -72,14 +73,25 @@ class PesertaMakrabResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $year_angkatan = [];
+        for ($i = 2021; $i <= date('Y'); $i++) {
+            $year_angkatan[$i] = $i;
+        }
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('mahasiswa.npm')
+                    ->label('NPM')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('mahasiswa.nama')
+                    ->label('Nama')
                     ->wrap()
                     ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('mahasiswa.tahun_angkatan')
+                    ->label('Tahun Angkatan')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('makrab.tahun_kegiatan')
                     ->label('Tahun Kegiatan')
@@ -143,6 +155,24 @@ class PesertaMakrabResource extends Resource
                         1 => 'Ya',
                         0 => 'Tidak',
                     ]),
+                SelectFilter::make('tahun_angkatan')
+                    ->label('Tahun Angkatan')
+                    ->options(
+                        Mahasiswa::query()
+                            ->select('tahun_angkatan')
+                            ->distinct()
+                            ->pluck('tahun_angkatan', 'tahun_angkatan')
+                            ->toArray()
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->query(function ($query, $data, $state) {
+                        if ($data['value'] && $data['value'] !== '') {
+                            $query->whereHas('mahasiswa', function ($q) use ($data) {
+                                $q->where('tahun_angkatan', $data['value']);
+                            });
+                        }
+                    }),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([

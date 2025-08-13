@@ -1,7 +1,12 @@
 <?php
+
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Spatie\Health\Checks\Checks\DebugModeCheck;
+use Spatie\Health\Checks\Checks\EnvironmentCheck;
+use Spatie\Health\Checks\Checks\OptimizedAppCheck;
+use Spatie\Health\Facades\Health;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +20,6 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
         }
-
     }
 
     /**
@@ -27,5 +31,10 @@ class AppServiceProvider extends ServiceProvider
         // $this->commands([
         //     \App\Console\Commands\UpdateKehadiranKegiatanStatusCommand::class,
         // ]);
+        Health::checks([
+            OptimizedAppCheck::new(),
+            DebugModeCheck::new(),
+            EnvironmentCheck::new(),
+        ]);
     }
 }
