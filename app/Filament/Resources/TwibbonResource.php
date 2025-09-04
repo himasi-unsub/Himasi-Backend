@@ -43,6 +43,7 @@ class TwibbonResource extends Resource
                     ->image()
                     ->imageEditor()
                     ->acceptedFileTypes(['image/png', 'image/jpg', 'image/jpeg'])
+                    ->maxSize(2048) // 2MB
                     ->disk('public')
                     ->directory('twibbons')
                     ->getUploadedFileNameForStorageUsing(
