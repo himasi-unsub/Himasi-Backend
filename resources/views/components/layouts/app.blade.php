@@ -11,6 +11,24 @@
     @livewireStyles
     @stack('styles')
     @stack('scripts')
+
+    <style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            opacity: 0;
+        }
+    </style>
 </head>
 
 <body>

@@ -1,166 +1,294 @@
-<div x-data="twibbonEditor('{{ asset('storage/' . $twibbon->file) }}', '{{ Str::slug($twibbon->nama, '_') }}')" x-init="init()">
-    <div class="min-h-screen flex flex-col bg-gray-50">
+<div class="font-sans leading-relaxed text-gray-800 bg-gradient-to-br from-primary-500 to-purple-600 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white/95 backdrop-blur-md shadow-lg sticky top-0 z-50 transition-all duration-300" id="header">
+        <nav class="max-w-6xl mx-auto px-6 flex justify-between items-center py-4">
+            <a href="#" class="text-3xl font-bold text-primary-500 hover:text-primary-600 transition-colors">
+                Twibbonizer
+            </a>
+            <ul class="hidden md:flex space-x-8">
+                <li><a href="#beranda"
+                        class="font-medium text-gray-700 hover:text-primary-500 transition-colors">Beranda</a></li>
+                <li><a href="#fitur"
+                        class="font-medium text-gray-700 hover:text-primary-500 transition-colors">Fitur</a></li>
+                <li><a href="#tentang"
+                        class="font-medium text-gray-700 hover:text-primary-500 transition-colors">Tentang</a></li>
+                <li><a href="#kontak"
+                        class="font-medium text-gray-700 hover:text-primary-500 transition-colors">Kontak</a></li>
+                {{-- CTA Login --}}
+                <li><a href="{{ url('/twibbonizer/client') }}"
+                        class="font-medium text-white bg-gradient-to-r from-accent-500 to-accent-600 px-4 py-2 rounded-full hover:shadow-lg hover:-translate-y-05 transition-all duration-300">
+                        Masuk
+                    </a></li>
+            </ul>
+            <!-- Mobile menu button -->
+            <button class="md:hidden text-gray-700 hover:text-primary-500" id="mobile-menu-btn">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                    </path>
+                </svg>
+            </button>
+        </nav>
 
-        <!-- Header / Judul -->
-        <header class="py-6">
-            <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr,auto] gap-6">
-                <!-- Judul sejajar canvas -->
-                <div>
-                    <h1 class="text-2xl md:text-3xl font-bold text-red-600">
-                        Twibbonizer
-                    </h1>
-                    <p class="text-gray-600 text-sm md:text-base">
-                        Upload fotomu dan pasang twibbon dengan mudah
+        <!-- Mobile menu -->
+        <div class="md:hidden bg-white/95 backdrop-blur-md border-t hidden" id="mobile-menu">
+            <div class="px-6 py-4 space-y-4">
+                <a href="#beranda"
+                    class="block font-medium text-gray-700 hover:text-primary-500 transition-colors">Beranda</a>
+                <a href="#fitur"
+                    class="block font-medium text-gray-700 hover:text-primary-500 transition-colors">Fitur</a>
+                <a href="#tentang"
+                    class="block font-medium text-gray-700 hover:text-primary-500 transition-colors">Tentang</a>
+                <a href="#kontak"
+                    class="block font-medium text-gray-700 hover:text-primary-500 transition-colors">Kontak</a>
+                {{-- CTA Login --}}
+                <a href="{{ url('/twibbonizer/client') }}"
+                    class="block font-medium text-white bg-gradient-to-r from-accent-500 to-accent-600 px-4 py-2 rounded-full text-center hover:shadow-lg hover:-translate-y-05 transition-all duration-300">
+                    Masuk
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="text-center py-16 px-6 text-white" id="beranda">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 drop-shadow-lg">
+                Buat Twibbon dengan Mudah
+            </h1>
+            <p class="text-lg md:text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+                Platform gratis untuk membuat twibbon berkualitas tinggi tanpa watermark. Dari mahasiswa, untuk
+                mahasiswa!
+            </p>
+            <button onclick="startCreating()"
+                class="bg-gradient-to-r from-accent-500 to-accent-600 text-white px-10 py-4 rounded-full text-lg font-semibold hover:shadow-xl hover:-translate-y-1 transition-all duration-300 shadow-lg">
+                Mulai Sekarang
+            </button>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-16 px-6" id="fitur">
+        <div class="max-w-6xl mx-auto">
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+                    Mengapa Memilih Twibbonizer?
+                </h2>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div
+                        class="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border-2 border-transparent hover:border-primary-500 animate-fade-in-up">
+                        <div
+                            class="w-20 h-20 bg-gradient-to-br from-primary-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl">
+                            📸
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800">Upload Mudah</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Upload foto dari perangkat Anda dengan mudah. Mendukung berbagai format gambar populer
+                            dengan kualitas terbaik.
+                        </p>
+                    </div>
+
+                    <div
+                        class="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border-2 border-transparent hover:border-primary-500 animate-fade-in-up-delay-1">
+                        <div
+                            class="w-20 h-20 bg-gradient-to-br from-primary-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl">
+                            🎨
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800">Editor Canggih</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Sesuaikan ukuran dan posisi foto Anda agar pas dengan frame twibbon. Interface yang intuitif
+                            dan mudah digunakan.
+                        </p>
+                    </div>
+
+                    <div
+                        class="bg-white rounded-2xl p-8 text-center shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border-2 border-transparent hover:border-primary-500 animate-fade-in-up-delay-2">
+                        <div
+                            class="w-20 h-20 bg-gradient-to-br from-primary-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl">
+                            ⬇️
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4 text-gray-800">Download Gratis</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Download hasil twibbon Anda dengan kualitas HD tanpa watermark. Sepenuhnya gratis untuk
+                            semua pengguna.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="py-16 px-6 text-white">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 drop-shadow-lg">
+                Cara Menggunakan Twibbonizer
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-8 mb-12">
+                <div
+                    class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 hover:bg-white/15 transition-all duration-300">
+                    <div
+                        class="w-12 h-12 bg-accent-500 rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-6 text-white">
+                        1
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">Upload Foto</h3>
+                    <p class="opacity-90">
+                        Pilih dan upload foto terbaik Anda dari galeri atau kamera
+                    </p>
+                </div>
+
+                <div
+                    class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 hover:bg-white/15 transition-all duration-300">
+                    <div
+                        class="w-12 h-12 bg-accent-500 rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-6 text-white">
+                        2
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">Atur Posisi</h3>
+                    <p class="opacity-90">
+                        Sesuaikan ukuran dan posisi foto agar pas dengan frame twibbon
+                    </p>
+                </div>
+
+                <div
+                    class="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 hover:bg-white/15 transition-all duration-300">
+                    <div
+                        class="w-12 h-12 bg-accent-500 rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-6 text-white">
+                        3
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4">Download Hasil</h3>
+                    <p class="opacity-90">
+                        Download twibbon Anda dengan kualitas terbaik tanpa watermark
                     </p>
                 </div>
             </div>
-        </header>
 
-        <!-- Konten Utama -->
-        <main class="flex-grow flex items-center justify-center">
-            <div class="grid grid-cols-1 md:grid-cols-[1fr,auto] gap-6 max-w-6xl w-full p-6 justify-center items-start">
+            <button onclick="startCreating()"
+                class="bg-gradient-to-r from-accent-500 to-accent-600 text-white px-10 py-4 rounded-full text-lg font-semibold hover:shadow-xl hover:-translate-y-1 transition-all duration-300 shadow-lg">
+                Coba Sekarang
+            </button>
+        </div>
+    </section>
 
-                <!-- Preview -->
-                <div>
-                    <div class="relative">
-                        <!-- Canvas dengan resolusi asli 1080x1080 -->
-                        <canvas x-ref="canvas" width="1080" height="1080"
-                            class="rounded-lg shadow max-w-full sm:max-w-full h-auto">
-                        </canvas>
-                    </div>
-                </div>
+    <!-- About Section -->
+    <section class="py-16 px-6" id="tentang">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-8 md:p-12 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-gray-800">
+                    Tentang Twibbonizer
+                </h2>
 
-                <!-- Controls -->
-                <div class="flex justify-center">
-                    <div class="bg-white shadow-md p-4 rounded-xl flex flex-col gap-4 w-72 h-fit">
+                <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                    Twibbonizer adalah platform yang dikembangkan khusus untuk membantu mahasiswa dan komunitas dalam
+                    membuat twibbon dengan mudah dan gratis. Tanpa perlu software rumit atau keahlian desain, siapa pun
+                    dapat membuat twibbon berkualitas profesional.
+                </p>
 
-                        <!-- Upload -->
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Pilih Foto</label>
-                            <input type="file" @change="loadFile($event)"
-                                class="w-full text-sm border border-gray-300 p-2 rounded focus:ring-2 focus:ring-red-500">
-                        </div>
+                <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                    Kami percaya bahwa setiap orang berhak mendapatkan akses ke tools kreatif yang berkualitas tanpa
+                    harus mengeluarkan biaya. Oleh karena itu, Twibbonizer hadir sebagai solusi yang sepenuhnya gratis
+                    dan mudah digunakan.
+                </p>
 
-                        <!-- Slider zoom -->
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Atur Ukuran</label>
-                            <input type="range" min="0.5" max="2" step="0.1" x-model="scale"
-                                @input="render()" class="w-full accent-red-500">
-                        </div>
-
-                        <!-- Tombol Arah -->
-                        <div class="flex justify-center">
-                            <div class="w-52 h-52 bg-red-500 rounded-full flex items-center justify-center relative">
-                                <!-- Tombol Atas -->
-                                <button @click="move(0, -10)"
-                                    class="absolute top-1.5 w-16 h-16 bg-red-700 text-white rounded-full flex items-center justify-center text-lg">▲</button>
-
-                                <!-- Tombol Bawah -->
-                                <button @click="move(0, 10)"
-                                    class="absolute bottom-1.5 w-16 h-16 bg-red-700 text-white rounded-full flex items-center justify-center text-lg">▼</button>
-
-                                <!-- Tombol Kiri -->
-                                <button @click="move(-10, 0)"
-                                    class="absolute left-1.5 w-16 h-16 bg-red-700 text-white rounded-full flex items-center justify-center text-lg">◀</button>
-
-                                <!-- Tombol Kanan -->
-                                <button @click="move(10, 0)"
-                                    class="absolute right-1.5 w-16 h-16 bg-red-700 text-white rounded-full flex items-center justify-center text-lg">▶</button>
-                            </div>
-                        </div>
-
-                        <!-- Unduh -->
-                        <button @click="download()"
-                            class="px-4 py-2 bg-red-600 text-white rounded shadow hover:bg-red-700 transition text-sm">
-                            Unduh
-                        </button>
-                    </div>
+                <div
+                    class="inline-block bg-gradient-to-r from-primary-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg">
+                    Dikembangkan oleh HIMASI Universitas Subang
                 </div>
             </div>
-        </main>
+        </div>
+    </section>
 
-        <!-- Footer -->
-        <footer class="py-4 ">
-            <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-[1fr,auto] gap-6">
-                <!-- Footer sejajar canvas -->
-                <div class="text-gray-500 text-sm">
-                    © 2025 <span class="font-semibold text-red-600">HIMASI Universitas Subang</span>.
-                    Dibuat dengan ❤️ dari mahasiswa untuk mahasiswa.
-                </div>
-            </div>
-        </footer>
-    </div>
+    <!-- Contact Section -->
+    <section class="py-16 px-6 text-white text-center" id="kontak">
+        <div class="max-w-2xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 drop-shadow-lg">
+                Hubungi Kami
+            </h2>
+            <p class="text-lg mb-8 opacity-90">
+                Ada pertanyaan atau saran? Jangan ragu untuk menghubungi tim kami!
+            </p>
+            <a href="mailto:himasi@unsub.ac.id" target="_blank" rel="noopener noreferrer"
+                class="inline-block bg-white/20 backdrop-blur-sm text-white px-8 py-3 border-2 border-white rounded-full font-semibold hover:bg-white hover:text-primary-500 transition-all duration-300">
+                Kirim Email
+            </a>
+        </div>
+    </section>
 
+    <!-- Footer -->
+    <footer class="bg-black/80 text-white text-center py-8">
+        <div class="max-w-4xl mx-auto px-6">
+            <p class="opacity-80">
+                &copy; {{ date('Y') }} Twibbonizer. Semua hak cipta dilindungi.
+                <br class="md:hidden">
+                Dibuat dengan <span class="text-red-400">❤️</span> oleh HIMASI Universitas Subang
+            </p>
+        </div>
+    </footer>
 
     <script>
-        function twibbonEditor(frameUrl, fileName) {
-            return {
-                ctx: null,
-                image: null,
-                x: 0,
-                y: 0,
-                scale: 1,
-                frame: null,
-                canvas: null,
-                fileName: fileName, // nama file dari backend
-
-                init() {
-                    this.canvas = this.$refs.canvas;
-                    this.ctx = this.canvas.getContext('2d');
-
-                    // load twibbon frame
-                    this.frame = new Image();
-                    this.frame.onload = () => this.render();
-                    this.frame.src = frameUrl;
-                },
-
-                loadFile(e) {
-                    const file = e.target.files[0];
-                    if (!file) return;
-
-                    this.image = new Image();
-                    this.image.onload = () => {
-                        // reset posisi tengah
-                        this.scale = 1;
-                        const w = this.image.width;
-                        const h = this.image.height;
-                        this.x = (this.canvas.width - w) / 2;
-                        this.y = (this.canvas.height - h) / 2;
-                        this.render();
-                    };
-                    this.image.src = URL.createObjectURL(file);
-                },
-
-                render() {
-                    if (!this.ctx) return;
-                    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-                    // gambar foto user
-                    if (this.image) {
-                        const w = this.image.width * this.scale;
-                        const h = this.image.height * this.scale;
-                        this.ctx.drawImage(this.image, this.x, this.y, w, h);
-                    }
-
-                    // gambar frame (sesuai ukuran canvas)
-                    if (this.frame) {
-                        this.ctx.drawImage(this.frame, 0, 0, this.canvas.width, this.canvas.height);
-                    }
-                },
-
-                move(dx, dy) {
-                    this.x += dx;
-                    this.y += dy;
-                    this.render();
-                },
-
-                download() {
-                    const link = document.createElement('a');
-                    link.download = `${this.fileName || 'twibbon'}.png`;
-                    link.href = this.canvas.toDataURL("image/png");
-                    link.click();
-                }
-            }
+        function startCreating() {
+            // alert('Fitur upload akan segera tersedia! Terima kasih atas minat Anda menggunakan Twibbonizer.');
+            window.location.href = "{{ url('/twibbonizer/client/register') }}";
         }
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Header background change on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 100) {
+                header.classList.remove('bg-white/95');
+                header.classList.add('bg-white/98');
+            } else {
+                header.classList.remove('bg-white/98');
+                header.classList.add('bg-white/95');
+            }
+        });
+
+        // Trigger animations when elements come into view
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all animated elements
+        document.querySelectorAll('.animate-fade-in-up, .animate-fade-in-up-delay-1, .animate-fade-in-up-delay-2').forEach(
+            el => {
+                observer.observe(el);
+            });
     </script>
-</div>
+    </body>

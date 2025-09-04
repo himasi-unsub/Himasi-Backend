@@ -52,7 +52,23 @@ class TwibbonResource extends Resource
                     )
                     ->required()
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('keterangan')
+                Forms\Components\RichEditor::make('keterangan')
+                    ->label('Keterangan / Caption')
+                    ->toolbarButtons([
+                        'blockquote',
+                        'bold',
+                        'bulletList',
+                        'h2',
+                        'h3',
+                        'italic',
+                        'link',
+                        'orderedList',
+                        'redo',
+                        'strike',
+                        'underline',
+                        'undo',
+                    ])
+                    ->hint("Keterangan digunakan untuk isi caption ketika membagikan twibbon ke sosial media.")
                     ->maxLength(255)
                     ->columnSpanFull(),
                 Forms\Components\Toggle::make('is_active')
@@ -101,7 +117,7 @@ class TwibbonResource extends Resource
                 Tables\Actions\Action::make('preview')
                     ->label('Preview')
                     ->icon('heroicon-o-eye')
-                    ->url(fn(Twibbon $record) => route('twibbonizer', $record->slug))
+                    ->url(fn(Twibbon $record) => route('twibbonizer.show', $record->slug))
                     ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

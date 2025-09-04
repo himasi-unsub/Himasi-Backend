@@ -17,7 +17,8 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::get('/twibbonizer/{slug}', \App\Livewire\Twibbonizer::class)->name('twibbonizer');
+Route::get('/twibbonizer', \App\Livewire\Twibbonizer::class)->name('twibbonizer');
+Route::get('/twibbonizer/{slug}', \App\Livewire\TwibbonizerShow::class)->name('twibbonizer.show');
 
 // Generate Sertifikat Mabim
 Route::get('/sertifikat/{kegiatan}/peserta/{peserta}', [GenerateSertifikat::class, 'generateSertifikat'])
