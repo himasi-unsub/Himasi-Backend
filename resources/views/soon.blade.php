@@ -162,9 +162,9 @@
     <div class="particles"></div>
 
     <!-- Floating geometric shapes -->
-    {{-- <div class="absolute top-20 left-20 w-16 h-16 bg-white bg-opacity-10 rounded-full floating-animation"></div> --}}
+    <div class="absolute top-20 left-20 w-16 h-16 bg-white bg-opacity-10 rounded-full floating-animation"></div>
     <div class="absolute top-40 right-32 w-8 h-8 bg-purple-300 bg-opacity-20 rounded-full floating-animation"></div>
-    <div class="absolute bottom-32 left-32 w-12 h-12 bg-blue-300 bg-opacity-15 rotate-45 floating-animation"></div>
+    <div class="absolute bottom-32 left-32 w-12 h-12 bg-blue-300 bg-opacity-15 rounded-full floating-animation"></div>
     <div class="absolute bottom-20 right-20 w-20 h-20 bg-pink-300 bg-opacity-10 rounded-full floating-animation"></div>
 
     <!-- Main content container -->
@@ -195,6 +195,13 @@
         <p class="text-lg text-white text-opacity-80 mb-12 max-w-2xl mx-auto leading-relaxed fade-in-up delay-3">
             We're crafting an extraordinary experience that will revolutionize the way you think about innovation.
             Stay tuned for the big reveal!
+        </p>
+
+        {{-- Available Service (Twibbonizer) --}}
+        <p class="text-md text-white text-opacity-70 mb-6 max-w-2xl mx-auto leading-relaxed fade-in-up delay-3">
+            In the meantime, check out our <a href="{{ route('twibbonizer') }}"
+                class="underline font-semibold">Twibbonizer</a> service to create custom twibbons for your social media
+            profiles!
         </p>
 
         <!-- Social media links -->
