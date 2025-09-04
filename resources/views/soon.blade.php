@@ -198,7 +198,7 @@
         </p>
 
         <!-- Social media links -->
-        <div class="flex justify-center space-x-10 fade-in-up delay-4 gap-4">
+        <div class="flex justify-center space-x-6 fade-in-up delay-4">
             <a href="mailto:himasi@unsub.ac.id" target="_blank"
                 class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center glass-morphism hover:bg-opacity-30 transition-all duration-300 transform hover:scale-110">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 text-white" fill="none"
