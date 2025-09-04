@@ -1,6 +1,6 @@
 <div class="font-sans bg-gradient-to-br from-primary-500 to-purple-600 min-h-screen">
 
-    <div x-data="twibbonEditor('{{ asset('storage/' . $twibbon->file) }}', '{{ Str::slug($twibbon->nama, '_') }}')" x-init="init()" class="min-h-screen flex flex-col">
+    <div x-data="twibbonEditor('{{ asset('storage/' . $twibbon->file) }}', '{{ Str::slug($twibbon->nama, '_') }}', '{{ $twibbon->keterangan }}')" x-init="init()" class="min-h-screen flex flex-col">
 
         <!-- Header -->
         <header class="bg-white/95 backdrop-blur-md shadow-lg">
@@ -403,7 +403,7 @@
             }
         }
 
-        function twibbonEditor(frameUrl, fileName) {
+        function twibbonEditor(frameUrl, fileName, keterangan) {
             return {
                 ctx: null,
                 image: null,
@@ -413,6 +413,7 @@
                 frame: null,
                 canvas: null,
                 fileName: fileName,
+                keterangan: keterangan,
 
                 init() {
                     this.canvas = this.$refs.canvas;
@@ -579,51 +580,6 @@
                     link.click();
                 },
 
-                share() {
-                    if (!this.image) {
-                        alert('Upload foto terlebih dahulu!');
-                        return;
-                    }
-
-                    // Generate Blob dari canvas
-                    this.canvas.toBlob((blob) => {
-                        if (!blob) return;
-
-                        const file = new File([blob], `${this.fileName || 'twibbon'}.png`, {
-                            type: "image/png"
-                        });
-
-                        // Gunakan Web Share API jika tersedia
-                        if (navigator.canShare && navigator.canShare({
-                                files: [file]
-                            })) {
-                            navigator.share({
-                                title: "Twibbonizer",
-                                text: "Aku baru saja membuat twibbon, yuk coba juga!",
-                                files: [file],
-                            }).catch(err => console.log("Share dibatalkan:", err));
-                        } else {
-                            // Fallback: buka link share manual
-                            const url = encodeURIComponent(window.location.href);
-                            const text = encodeURIComponent(
-                                "Aku baru saja membuat twibbon, yuk coba juga di Twibbonizer!");
-                            const waUrl = `https://wa.me/?text=${text}%20${url}`;
-                            const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-                            const twUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
-
-                            // Tampilkan pilihan share manual
-                            const pilihan = confirm(
-                                "Browser tidak mendukung share langsung.\nKlik OK untuk share via WhatsApp, Cancel untuk Facebook."
-                            );
-                            if (pilihan) {
-                                window.open(waUrl, "_blank");
-                            } else {
-                                window.open(fbUrl, "_blank");
-                            }
-                        }
-                    }, "image/png");
-                },
-
                 shareTo(platform) {
                     if (!this.image) {
                         alert("Upload foto terlebih dahulu!");
@@ -637,7 +593,8 @@
                             type: "image/png"
                         });
                         const url = URL.createObjectURL(blob);
-                        const shareText = "Aku baru saja membuat twibbon di Twibbonizer, yuk coba juga!";
+                        const shareText =
+                            `${this.keterangan}\n\nDibuat dengan Twibbonizer: ${window.location.href}`;
 
                         switch (platform) {
                             case "whatsapp":
@@ -677,8 +634,7 @@
                                     link.click();
 
                                     // Copy caption otomatis
-                                    const caption =
-                                        "✨ Aku baru saja membuat twibbon di Twibbonizer! Yuk coba juga 👉 https://twibbonizer.example.com";
+                                    const caption = `${encodeURIComponent(shareText)}`;
                                     navigator.clipboard.writeText(caption)
                                         .then(() => {
                                             alert(
@@ -716,8 +672,6 @@
                         }
                     }, "image/png");
                 }
-
-
             }
         }
     </script>
