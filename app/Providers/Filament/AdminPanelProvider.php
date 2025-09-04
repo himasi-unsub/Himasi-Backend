@@ -117,7 +117,9 @@ class AdminPanelProvider extends PanelProvider
                         StatusEnum::FINISHED->value => 'success',
                         StatusEnum::FAILED->value => 'danger',
                     ]), // (optional) - Allows you to change notification and badge colors used for statuses. Uses filament colors defined in panel provider. [Default: as show in method]
-                FilamentJobsMonitorPlugin::make(),
+                FilamentJobsMonitorPlugin::make()
+                    ->enableNavigation(auth()->user()?->can('view_queue::monitor') ? true : false)
+                // ->shouldRegisterNavigation(auth()->user()?->can('view_queue::monitor')),
             ]);
     }
 }

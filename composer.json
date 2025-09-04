@@ -18,6 +18,7 @@
         "filament/filament": "^3.2",
         "guava/filament-icon-select-column": "^1.1",
         "husam-tariq/filament-timepicker": "^3.0",
+        "intervention/image": "^3.11",
         "jeffgreco13/filament-breezy": "^2.6",
         "laravel/framework": "^11.31",
         "laravel/jetstream": "^5.3",
