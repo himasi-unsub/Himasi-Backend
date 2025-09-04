@@ -1,4 +1,4 @@
-<div x-data="twibbonEditor('{{ asset('storage/' . $twibbon->file) }}')" x-init="init()">
+<div x-data="twibbonEditor('{{ asset('storage/' . $twibbon->file) }}', '{{ Str::slug($twibbon->nama, '_') }}')" x-init="init()">
     <div class="min-h-screen flex flex-col bg-gray-50">
 
         <!-- Header / Judul -->
@@ -93,7 +93,7 @@
 
 
     <script>
-        function twibbonEditor(frameUrl) {
+        function twibbonEditor(frameUrl, fileName) {
             return {
                 ctx: null,
                 image: null,
@@ -102,6 +102,7 @@
                 scale: 1,
                 frame: null,
                 canvas: null,
+                fileName: fileName, // nama file dari backend
 
                 init() {
                     this.canvas = this.$refs.canvas;
@@ -155,7 +156,7 @@
 
                 download() {
                     const link = document.createElement('a');
-                    link.download = 'twibbon.png';
+                    link.download = `${this.fileName || 'twibbon'}.png`;
                     link.href = this.canvas.toDataURL("image/png");
                     link.click();
                 }
@@ -163,84 +164,3 @@
         }
     </script>
 </div>
-
-
-
-{{-- <div class="max-w-xl mx-auto p-6" x-data="twibbonCropper('{{ asset('storage/' . $twibbon->file) }}')" x-init="init()">
-
-    <h1 class="text-xl font-bold mb-4">Twibbon: {{ $twibbon->nama }}</h1>
-
-    <!-- Upload Foto -->
-    <input type="file" @change="loadFile($event)" class="mb-4 border rounded p-2 w-full">
-
-    <!-- Preview Crop -->
-    <div class="relative w-80 h-80 border overflow-hidden mx-auto">
-        <img x-ref="preview" class="max-w-full" style="display:none;">
-        <img :src="frame" class="absolute top-0 left-0 w-full h-full pointer-events-none">
-    </div>
-
-    <!-- Actions -->
-    <div class="mt-4 flex justify-center space-x-2">
-        <button @click="download()" class="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700">
-            Download
-        </button>
-        <button @click="uploadToServer()" class="px-4 py-2 bg-green-600 text-white rounded shadow hover:bg-green-700">
-            Simpan ke Server
-        </button>
-    </div>
-
-    <script>
-        function twibbonCropper(frameUrl) {
-            return {
-                frame: frameUrl,
-                cropper: null,
-                init() {},
-                loadFile(e) {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    const preview = this.$refs.preview;
-                    preview.src = URL.createObjectURL(file);
-                    preview.style.display = 'block';
-
-                    if (this.cropper) this.cropper.destroy();
-                    this.cropper = new Cropper(preview, {
-                        aspectRatio: 1,
-                        viewMode: 1,
-                        background: false,
-                    });
-                },
-                download() {
-                    if (!this.cropper) return;
-                    const canvas = this.cropper.getCroppedCanvas({
-                        width: 800,
-                        height: 800
-                    });
-                    const ctx = canvas.getContext('2d');
-                    const frameImg = new Image();
-                    frameImg.src = this.frame;
-                    frameImg.onload = () => {
-                        ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-                        const link = document.createElement('a');
-                        link.download = 'twibbon.png';
-                        link.href = canvas.toDataURL('image/png');
-                        link.click();
-                    };
-                },
-                uploadToServer() {
-                    if (!this.cropper) return;
-                    const canvas = this.cropper.getCroppedCanvas({
-                        width: 800,
-                        height: 800
-                    });
-                    const ctx = canvas.getContext('2d');
-                    const frameImg = new Image();
-                    frameImg.src = this.frame;
-                    frameImg.onload = () => {
-                        ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-                        Livewire.emit('saveCropped', canvas.toDataURL('image/png'));
-                    };
-                }
-            }
-        }
-    </script>
-</div> --}}
