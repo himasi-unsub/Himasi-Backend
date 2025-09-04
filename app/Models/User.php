@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Filament\Models\Contracts\FilamentUser;
@@ -18,7 +18,7 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar
+class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerifyEmail
 {
     use HasApiTokens;
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -76,8 +76,15 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     public function canAccessPanel(Panel $panel): bool
     {
+        if ($panel->getId() === 'twibbonizer-client') {
+            return $this->hasRole(['twibbonizer', 'super_admin', 'himasi'], 'web');
+        }
+        if ($panel->getId() === 'admin') {
+            return $this->hasRole(['super_admin', 'admin', 'himasi'], 'web');
+        }
+        // Allow all authenticated users to access other panels, or customize as needed
         // return str_ends_with($this->email, '@gmail.com');
-        return true;
+        return false;
     }
 
     public function getFilamentAvatarUrl(): ?string
