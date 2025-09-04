@@ -41,10 +41,9 @@ class Twibbonizer extends Component
         $url = Storage::url($path);
         $this->dispatchBrowserEvent('twibbon-saved', ['url' => $url]);
     }
-
-    #[Title('Twibbonizer - ')]
     public function render()
     {
-        return view('livewire.twibbonizer');
+        return view('livewire.twibbonizer')
+            ->title($this->twibbon->nama . ' - Twibbonizer');
     }
 }
