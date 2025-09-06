@@ -710,9 +710,20 @@
 
     <script>
         function goHome() {
-            if (confirm('Yakin ingin kembali? Perubahan yang belum disimpan akan hilang.')) {
-                window.location.href = "{{ url('/twibbonizer') }}";
-            }
+            Swal.fire({
+                title: 'Kembali ke Beranda?',
+                text: "Perubahan yang belum disimpan akan hilang.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, kembali',
+                cancelButtonText: 'Batalkan'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '{{ route('twibbonizer') }}';
+                }
+            });
         }
 
         // function twibbonEditor(frameUrl, fileName, keterangan, twibbonTitle) {
