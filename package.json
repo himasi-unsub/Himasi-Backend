@@ -19,6 +19,7 @@
         "vite": "^6.0"
     },
     "dependencies": {
-        "cropperjs": "^2.0.1"
+        "cropperjs": "^2.0.1",
+        "sweetalert2": "^11.23.0"
     }
 }
