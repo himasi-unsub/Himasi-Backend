@@ -179,7 +179,11 @@ class PesertaMakrabResource extends Resource
                     Tables\Actions\Action::make('generate-sertifikat')
                         ->label('Generate Sertifikat')
                         ->icon('heroicon-o-arrow-down-tray')
-                        ->url(fn($record) => route('generate-sertifikat', ['kegiatan' => 'makrab', 'peserta' => $record->id])),
+                        ->requiresConfirmation()
+                        ->closeModalByClickingAway()
+                        ->closeModalByEscaping()
+                        ->modalDescription('Apakah Anda yakin ingin mengenerate sertifikat peserta yang dipilih?')
+                        ->action(fn($record) => redirect()->route('generate-sertifikat', ['kegiatan' => 'makrab', 'peserta' => $record->id])),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                 ]),

@@ -2,7 +2,8 @@
 
 namespace App;
 
-trait OfficeProcessor {
+trait OfficeProcessor
+{
     //
     /**
      * Mengambil variabel template dari file Word.
@@ -12,13 +13,15 @@ trait OfficeProcessor {
      * array yang dikembalikan oleh fungsi ini.
      *
      * @param string $lokasiTemplate Lokasi file template Word yang akan dibaca.
+     * @param string $storage Jenis penyimpanan file ('public','local'), default adalah 'public'.
      * @return array Daftar variabel yang ditemukan dalam template.
      */
-    public function ambilVariabelTemplate($lokasiTemplate): array {
+    public function ambilVariabelTemplate($lokasiTemplate, $storage = 'public'): array
+    {
         $dataVar = [];
         // read template file
         $reader = \PhpOffice\PhpWord\IOFactory::createReader('Word2007');
-        $phpWord = $reader->load(storage_path('app/public/' . $lokasiTemplate));
+        $phpWord = $reader->load($storage == 'public' ? storage_path('app/public/' . $lokasiTemplate) : $lokasiTemplate);
         $section = $phpWord->getSections();
         foreach ($section as $s) {
             $elements = $s->getElements();
@@ -79,13 +82,12 @@ trait OfficeProcessor {
                                         // $dataVar[] = preg_replace('/\$\{([A-Za-z0-9-_]+)\}/', '',$el->getText());
                                         // $dataVar[] = preg_replace('/[^A-Za-z0-9\-\_]/', '',$el->getText());
                                         preg_match_all('/\$\{([A-Za-z0-9-_]+)\}/', $el->getText(), $matches);
-                                            if (isset($matches[1])) {
-                                                // dd($matches);
-                                                $variableName = $matches[1]; // Ambil nilai KEPALA_DINAS
-                                                $dataVar[] = $variableName;
-                                            }
+                                        if (isset($matches[1])) {
+                                            // dd($matches);
+                                            $variableName = $matches[1]; // Ambil nilai KEPALA_DINAS
+                                            $dataVar[] = $variableName;
+                                        }
                                     }
-
                                 }
                             }
                         }
@@ -101,7 +103,7 @@ trait OfficeProcessor {
         $dataVar = array_values($dataVar);
 
         // Remove 'ttd' values from the array
-        $dataVar = array_filter($dataVar, function($value) {
+        $dataVar = array_filter($dataVar, function ($value) {
             return strtolower($value) !== 'ttd';
         });
 
@@ -110,7 +112,8 @@ trait OfficeProcessor {
         return $dataVar;
     }
 
-    public function ambilVariabelTemplateDalamTable($lokasiTemplate): array {
+    public function ambilVariabelTemplateDalamTable($lokasiTemplate): array
+    {
         // Open the Docx file
         $dataVar = [];
         $reader = \PhpOffice\PhpWord\IOFactory::createReader('Word2007');
@@ -142,13 +145,12 @@ trait OfficeProcessor {
                                         // $dataVar[] = preg_replace('/\$\{([A-Za-z0-9-_]+)\}/', '',$el->getText());
                                         // $dataVar[] = preg_replace('/[^A-Za-z0-9\-\_]/', '',$el->getText());
                                         preg_match_all('/\$\{([A-Za-z0-9-_]+)\}/', $el->getText(), $matches);
-                                            if (isset($matches[1])) {
-                                                // dd($matches);
-                                                $variableName = $matches[1]; // Ambil nilai KEPALA_DINAS
-                                                $dataVar[] = $variableName;
-                                            }
+                                        if (isset($matches[1])) {
+                                            // dd($matches);
+                                            $variableName = $matches[1]; // Ambil nilai KEPALA_DINAS
+                                            $dataVar[] = $variableName;
+                                        }
                                     }
-
                                 }
                             }
                         }
@@ -164,14 +166,15 @@ trait OfficeProcessor {
         $dataVar = array_values($dataVar);
 
         // Remove 'ttd' values from the array
-        $dataVar = array_filter($dataVar, function($value) {
+        $dataVar = array_filter($dataVar, function ($value) {
             return strtolower($value) !== 'ttd';
         });
 
         return $dataVar;
     }
 
-    public function checkVariableInElements($search, $lokasiTemplate): bool{
+    public function checkVariableInElements($search, $lokasiTemplate): bool
+    {
         $result = false;
         // read template file
         $reader = \PhpOffice\PhpWord\IOFactory::createReader('Word2007');
@@ -186,7 +189,7 @@ trait OfficeProcessor {
                     $textRun = $element->getElements();
                     foreach ($textRun as $text) {
                         // echo "Text :" . $text->getText() . "<br>";
-                        if(get_class($text) == 'PhpOffice\PhpWord\Element\Text'){
+                        if (get_class($text) == 'PhpOffice\PhpWord\Element\Text') {
                             if (strpos($text->getText(), '${' . $search . '}') !== false) {
                                 // echo "Text: " . ($text->getText()) . "<br>";
                                 // $dataVar[] = preg_replace('/[^A-Za-z0-9\-_]/', '', $text->getText());
@@ -198,8 +201,8 @@ trait OfficeProcessor {
                 if (get_class($element) == 'PhpOffice\PhpWord\Element\ListItemRun') {
                     $listItemRun = $element->getElements();
                     foreach ($listItemRun as $text) {
-                        if(get_class($text) == 'PhpOffice\PhpWord\Element\Text'){
-                        // echo "Text :" . $text->getText() . "<br>";
+                        if (get_class($text) == 'PhpOffice\PhpWord\Element\Text') {
+                            // echo "Text :" . $text->getText() . "<br>";
                             if (strpos($text->getText(), '${' . $search . '}') !== false) {
                                 // echo "Text: " . ($text->getText()) . "<br>";
                                 // $dataVar[] = preg_replace('/[^A-Za-z0-9\-_]/', '', $text->getText());
@@ -213,7 +216,8 @@ trait OfficeProcessor {
         return $result;
     }
 
-    public function checkVariableInTable($search, $lokasiTemplate): bool{
+    public function checkVariableInTable($search, $lokasiTemplate): bool
+    {
         $result = false;
         // read template file
         $reader = \PhpOffice\PhpWord\IOFactory::createReader('Word2007');
@@ -231,11 +235,11 @@ trait OfficeProcessor {
                     $rows = $table->getRows();
                     foreach ($rows as $row) {
                         // dd($row);
-                        if (get_class($row) == 'PhpOffice\PhpWord\Element\Row'){
+                        if (get_class($row) == 'PhpOffice\PhpWord\Element\Row') {
                             $cell = $row->getCells();
                             // dd($cell);
                             foreach ($cell as $item) {
-                                if (get_class($item) == 'PhpOffice\PhpWord\Element\Cell'){
+                                if (get_class($item) == 'PhpOffice\PhpWord\Element\Cell') {
                                     // dd($item);
                                     $element = $item->getElements();
                                     foreach ($element as $textRun) {
@@ -244,7 +248,7 @@ trait OfficeProcessor {
                                             // dd($textRun);
                                             foreach ($textRun->getElements() as $text) {
                                                 // echo "Text :" . $text->getText() . "<br>";
-                                                if(get_class($text) == 'PhpOffice\PhpWord\Element\Text'){
+                                                if (get_class($text) == 'PhpOffice\PhpWord\Element\Text') {
                                                     // dd($text);
                                                     if (strpos($text->getText(), '${' . $search . '}') !== false) {
                                                         // echo "Text: " . ($text->getText()) . "<br>";
@@ -253,7 +257,6 @@ trait OfficeProcessor {
                                                     }
                                                 }
                                             }
-
                                         }
                                     }
                                 }

@@ -29,7 +29,7 @@ class GenerateSertifikat extends Controller
             $peserta             = PesertaMakrab::with('makrab.mahasiswa')->with('mahasiswa')->findOrFail($peserta);
             $ketua_pelaksana     = $peserta->makrab->mahasiswa->nama;
             $dokumenSertifikatId = DokumenSertifikat::findOrFail($peserta->makrab->id_dokumen_sertifikat);
-        } else if ('lainnya' == $kegiatan) {
+        } else if ('kegiatan' == $kegiatan) {
             $peserta             = PesertaKegiatan::with('kegiatanAcara.mahasiswa')->with('mahasiswa')->findOrFail($peserta);
             $ketua_pelaksana     = $peserta->kegiatanAcara->mahasiswa->nama;
             $dokumenSertifikatId = DokumenSertifikat::findOrFail($peserta->kegiatanAcara->id_dokumen_sertifikat);
@@ -101,7 +101,7 @@ class GenerateSertifikat extends Controller
             $pesertas            = PesertaMakrab::with('makrab')->with('mahasiswa')->findMany($records);
             $ketua_pelaksana     = $pesertas[0]->makrab->mahasiswa->nama;
             $dokumenSertifikatId = DokumenSertifikat::findOrFail($pesertas[0]->makrab->id_dokumen_sertifikat);
-        } else if ($kegiatan = 'lainnya') {
+        } else if ($kegiatan = 'kegiatan') {
             $pesertas            = PesertaKegiatan::with('kegiatanAcara.mahasiswa')->with('mahasiswa')->findMany($records);
             $ketua_pelaksana     = $pesertas[0]->kegiatanAcara->mahasiswa->nama;
             $dokumenSertifikatId = DokumenSertifikat::findOrFail($pesertas[0]->kegiatanAcara->id_dokumen_sertifikat);
@@ -287,7 +287,7 @@ class GenerateSertifikat extends Controller
             $peserta = PesertaMakrab::with('makrab')->whereHas('mahasiswa', function ($query) use ($npm) {
                 $query->where('npm', $npm);
             })->first();
-        } elseif ($kegiatan === 'lainnya') {
+        } elseif ($kegiatan === 'kegiatan') {
             $peserta = PesertaKegiatan::with('kegiatanAcara')->whereHas('mahasiswa', function ($query) use ($npm) {
                 $query->where('npm', $npm);
             })->first();

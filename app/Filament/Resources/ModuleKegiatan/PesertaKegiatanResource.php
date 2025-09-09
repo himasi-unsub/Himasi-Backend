@@ -1,54 +1,69 @@
 <?php
 
-namespace App\Filament\Resources\ModuleKegiatan\KegiatanAcaraResource\RelationManagers;
+namespace App\Filament\Resources\ModuleKegiatan;
 
+use App\Filament\Resources\ModuleKegiatan\PesertaKegiatanResource\Pages;
+use App\Filament\Resources\ModuleKegiatan\PesertaKegiatanResource\RelationManagers;
 use App\Models\KegiatanAcara;
+use App\Models\PesertaKegiatan;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PesertaKegiatanRelationManager extends RelationManager
+class PesertaKegiatanResource extends Resource
 {
-    protected static string $relationship = 'pesertaKegiatan';
+    protected static ?string $model = PesertaKegiatan::class;
 
-    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
-    {
-        return $ownerRecord->has_peserta;
-    }
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    public function form(Form $form): Form
+    protected static ?string $navigationGroup = 'Kegiatan atau Acara';
+
+    public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('id_mahasiswa')
-                    ->label('Mahasiswa')
                     ->relationship('mahasiswa', 'nama')
                     ->searchable()
                     ->preload()
-                    ->required()
-                    ->columnSpanFull(),
+                    ->required(),
+                Forms\Components\Select::make('id_kegiatan_acara')
+                    ->relationship('kegiatanAcara', 'nama_kegiatan')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
             ]);
     }
 
-    public function table(Table $table): Table
+    public static function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('id')
             ->columns([
                 Tables\Columns\TextColumn::make('mahasiswa.npm')
-                    ->label('NPM'),
+                    ->label('NPM')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('mahasiswa.nama')
-                    ->label('Nama'),
+                    ->label('Nama')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('kegiatanAcara.nama_kegiatan')
+                    ->label('Kegiatan / Acara')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
-            ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make(),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -60,7 +75,6 @@ class PesertaKegiatanRelationManager extends RelationManager
                         ->closeModalByEscaping()
                         ->modalDescription('Apakah Anda yakin ingin mengenerate sertifikat peserta yang dipilih?')
                         ->action(fn($record) => redirect()->route('generate-sertifikat', ['kegiatan' => 'kegiatan', 'peserta' => $record->id])),
-                    // ->visible(fn($record) => $record->kegiatanAcara->id_dokumen_sertifikat != null),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
                 ]),
@@ -76,10 +90,16 @@ class PesertaKegiatanRelationManager extends RelationManager
                     ->action(
                         fn(Collection $records = null) => redirect()->route('bulk-generate-sertifikat', ['kegiatan' => 'kegiatan', 'records' => urlencode(json_encode($records->pluck('id')->toArray()))])
                     ),
-                // ->visible(fn(KegiatanAcara $ownerRecords = null) => $ownerRecords->id_dokumen_sertifikat != null),
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ManagePesertaKegiatans::route('/'),
+        ];
     }
 }
