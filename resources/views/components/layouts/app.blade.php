@@ -8,10 +8,6 @@
     <title>{{ $title ?? 'Page Title' }}</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
-    @stack('styles')
-    @stack('scripts')
-
     <style>
         @keyframes fadeInUp {
             from {

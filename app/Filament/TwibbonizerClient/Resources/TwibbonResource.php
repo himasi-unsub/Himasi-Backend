@@ -94,8 +94,16 @@ class TwibbonResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('keterangan')
-                    ->toggleable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
+                Tables\Columns\TextColumn::make('hit')
+                    ->label('Hit')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('download_hit')
+                    ->label('Download Hit')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 ToggleIconColumn::make('is_active')
                     ->label('Aktif'),
                 Tables\Columns\TextColumn::make('user.name')

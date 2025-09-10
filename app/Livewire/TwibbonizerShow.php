@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Intervention\Image\Facades\Image;
+use Livewire\Attributes\On;
 
 class TwibbonizerShow extends Component
 {
@@ -25,6 +26,9 @@ class TwibbonizerShow extends Component
             return abort(404);
         }
         $this->twibbon = $findTwibbon;
+
+        // increment hit
+        $this->twibbon->increment('hit');
     }
 
     public function saveCropped($imageData)
@@ -41,6 +45,13 @@ class TwibbonizerShow extends Component
         $url = Storage::url($path);
         $this->dispatchBrowserEvent('twibbon-saved', ['url' => $url]);
     }
+
+    #[On('increaseDownloadHit')]
+    public function increaseDownloadHit()
+    {
+        $this->twibbon->increment('download_hit');
+    }
+
     public function render()
     {
         return view('livewire.twibbonizer-show')

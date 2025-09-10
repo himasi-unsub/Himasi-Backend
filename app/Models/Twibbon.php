@@ -12,6 +12,8 @@ class Twibbon extends Model
         'file',
         'keterangan',
         'is_active',
+        'hit',
+        'download_hit',
         'user_id',
     ];
 
